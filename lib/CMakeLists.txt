@@ -11,7 +11,9 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND nrsc5_rx_sources
-    nrsc5_rx_impl.cc )
+    nrsc5.cc
+    nrsc5_rx_impl.cc
+    )
 
 set(nrsc5_rx_sources "${nrsc5_rx_sources}" PARENT_SCOPE)
 if(NOT nrsc5_rx_sources)
@@ -20,7 +22,7 @@ if(NOT nrsc5_rx_sources)
 endif(NOT nrsc5_rx_sources)
 
 add_library(gnuradio-nrsc5_rx SHARED ${nrsc5_rx_sources})
-target_link_libraries(gnuradio-nrsc5_rx gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-nrsc5_rx gnuradio::gnuradio-runtime ${NRSC5_LIBRARIES})
 target_include_directories(gnuradio-nrsc5_rx
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
@@ -56,7 +58,9 @@ include(GrTest)
 list(APPEND test_nrsc5_rx_sources
 )
 # Anything we need to link to for the unit tests go here
-list(APPEND GR_TEST_TARGET_DEPS gnuradio-nrsc5_rx)
+list(APPEND GR_TEST_TARGET_DEPS
+gnuradio-nrsc5_rx
+)
 
 if(NOT test_nrsc5_rx_sources)
     MESSAGE(STATUS "No C++ unit tests... skipping")

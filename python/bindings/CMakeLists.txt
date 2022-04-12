@@ -28,7 +28,7 @@ include(GrPybind)
 # Python Bindings
 ########################################################################
 list(APPEND nrsc5_rx_python_files
-    nrsc5_rx_python.cc python_bindings.cc)
+    nrsc5_rx_python.cc python_bindings.cc nrsc5_python.cc)
 
 GR_PYBIND_MAKE_OOT(nrsc5_rx
    ../..
