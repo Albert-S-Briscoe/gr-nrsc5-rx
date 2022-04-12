@@ -3,3 +3,5 @@
 *.pyo
 build*/
 examples/grc/*.py
+build.sh
+Makefile

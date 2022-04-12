@@ -31,7 +31,8 @@ parameters:
 inputs:
 - label: in
   domain: stream
-  dtype: complex
+  dtype: short
+  vlen: 2
 #- label: ...
 #  domain: ...
 #  dtype: ...
@@ -39,18 +40,27 @@ inputs:
 #  optional: ...
 
 outputs:
-- label: Lout
-  domain: stream
-  dtype: float
-- label: Rout
-  domain: stream
-  dtype: float
+# disabled until I have a callback function
+#- label: Lout
+#  domain: stream
+#  dtype: float
+#- label: Rout
+#  domain: stream
+#  dtype: float
+
 
 #- label: ...
 #  domain: ...
 #  dtype: ...
 #  vlen: ...
 #  optional: ...
+
+documentation: |-
+  Currently incomplete. Audio output is disabled until I have a callback function.
+  Input is complex float 16 (output of 'Complex To IShort' with 'Vector Output' on) at
+  exactly 744187.5 samples/sec or complex float 8 at exactly 1488375 samples/sec.
+  Output will be 44100hz? audio, possibly padded with zeros
+
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.
