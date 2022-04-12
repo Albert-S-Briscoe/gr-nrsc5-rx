@@ -113,11 +113,13 @@ endif(APPLE)
 # Find gnuradio build dependencies
 ########################################################################
 find_package(Doxygen)
-find_package(nrsc5)
+find_package(nrsc5 REQUIRED)
 
 if(NOT NRSC5_FOUND)
   message(FATAL_ERROR "nrsc5 is required")
 endif()
+
+include_directories(${NRSC5_INCLUDE_DIR})
 
 ########################################################################
 # Setup doxygen option

@@ -13,7 +13,7 @@ include(GrPlatform) #define LIB_SUFFIX
 list(APPEND nrsc5_rx_sources
     nrsc5.cc
     nrsc5_rx_impl.cc
-    )
+)
 
 set(nrsc5_rx_sources "${nrsc5_rx_sources}" PARENT_SCOPE)
 if(NOT nrsc5_rx_sources)
@@ -26,13 +26,13 @@ target_link_libraries(gnuradio-nrsc5_rx gnuradio::gnuradio-runtime ${NRSC5_LIBRA
 target_include_directories(gnuradio-nrsc5_rx
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
-  )
+)
 set_target_properties(gnuradio-nrsc5_rx PROPERTIES DEFINE_SYMBOL "gnuradio_nrsc5_rx_EXPORTS")
 
 if(APPLE)
     set_target_properties(gnuradio-nrsc5_rx PROPERTIES
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-    )
+)
 endif(APPLE)
 
 ########################################################################
