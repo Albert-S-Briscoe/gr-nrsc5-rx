@@ -88,7 +88,8 @@ namespace gr {
 			// each input stream.
 			nrsc5_pipe_samples_cs16(nrsc5, in, 2 * ninput_items[0]);
 
-			for (int i = 0; i < ninput_items[0]; i++) {
+			n = 0;
+			for (int i = 0; i < noutput_items * 2; i++, n++) {
 				if (left_audio_queue.empty() || right_audio_queue.empty())
 					break;
 //				out0[i] = in[i];
@@ -96,13 +97,12 @@ namespace gr {
 				out1[i] = right_audio_queue.front();
 				left_audio_queue.pop();
 				right_audio_queue.pop();
-				n = i;
 			}
 
 			consume_each (ninput_items[0]);
 
 //			if (n > 0)
-//				std::cerr << "n=" << n << " ninputitems: " << ninput_items[0] << "\n";
+//				std::cerr << "produced=" << n << " input: " << ninput_items[0] << " wanted: " << noutput_items << " size: " << left_audio_queue.size() << "\n";
 
 			// Tell runtime system how many output items we produced.
 			return n;
