@@ -22,7 +22,7 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Demo NRSC-5 flowgraph using SDRPlay
+    title: SDRPlay NRSC-5 Receiver
     window_size: (1000,1000)
   states:
     bus_sink: false
@@ -33,6 +33,18 @@ options:
     state: enabled
 
 blocks:
+- name: audio_rate
+  id: variable
+  parameters:
+    comment: Must be 44.1khz
+    value: '44100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 8.0]
+    rotation: 0
+    state: true
 - name: freq
   id: variable_qtgui_range
   parameters:
@@ -51,19 +63,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 240.0]
+    coordinate: [584, 8.0]
     rotation: 0
     state: true
 - name: program
   id: variable_qtgui_chooser
   parameters:
     comment: ''
-    gui_hint: 1,0
+    gui_hint: 2,0
     label: Program
-    label0: ''
-    label1: ''
-    label2: ''
-    label3: ''
+    label0: HD-1
+    label1: HD-2
+    label2: HD-3
+    label3: HD-4
     label4: ''
     labels: '[]'
     num_opts: '4'
@@ -81,10 +93,43 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [648, 236.0]
+    coordinate: [976, 12.0]
+    rotation: 0
+    state: true
+- name: rsp_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 1,0
+    label: SDR Gain
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '-47'
+    step: '1'
+    stop: '0'
+    value: '-45'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [712, 8.0]
     rotation: 0
     state: true
 - name: samp_rate
+  id: variable
+  parameters:
+    comment: Must be 744187.5
+    value: '744187.5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 8.0]
+    rotation: 0
+    state: enabled
+- name: sdr_rate
   id: variable
   parameters:
     comment: ''
@@ -105,12 +150,12 @@ blocks:
     device_name: ''
     num_inputs: '2'
     ok_to_block: 'True'
-    samp_rate: '44100'
+    samp_rate: audio_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1240, 160.0]
+    coordinate: [1568, 264.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_interleaved_short_0
@@ -127,7 +172,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 160.0]
+    coordinate: [784, 264.0]
     rotation: 0
     state: enabled
 - name: blocks_short_to_float_0
@@ -144,7 +189,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [856, 144.0]
+    coordinate: [1184, 248.0]
     rotation: 0
     state: true
 - name: blocks_short_to_float_1
@@ -161,7 +206,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [856, 192.0]
+    coordinate: [1184, 296.0]
     rotation: 0
     state: true
 - name: blocks_throttle_1
@@ -173,14 +218,14 @@ blocks:
     ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: '44100'
+    samples_per_second: audio_rate
     type: float
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 144.0]
+    coordinate: [1344, 248.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle_1_0
@@ -192,14 +237,56 @@ blocks:
     ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: '44100'
+    samples_per_second: audio_rate
     type: float
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 192.0]
+    coordinate: [1344, 296.0]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '320000'
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: sdr_rate
+    type: fir_filter_ccf
+    width: '50000'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 188.0]
+    rotation: 0
+    state: enabled
+- name: mmse_resampler_xx_0
+  id: mmse_resampler_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_shift: '0'
+    resamp_ratio: sdr_rate/samp_rate
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [536, 248.0]
     rotation: 0
     state: enabled
 - name: nrsc5_rx_nrsc5_rx_1
@@ -215,7 +302,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [648, 160.0]
+    coordinate: [976, 264.0]
     rotation: 0
     state: true
 - name: qtgui_sink_x_0
@@ -223,15 +310,15 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bw: '744187.5'
+    bw: samp_rate
     comment: ''
     fc: '0'
     fftsize: '1024'
-    gui_hint: 2,0,10,1
+    gui_hint: 3,0,10,1
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
-    plotconst: 'True'
+    plotconst: 'False'
     plotfreq: 'True'
     plottime: 'True'
     plotwaterfall: 'True'
@@ -244,29 +331,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [456, 24.0]
+    coordinate: [784, 144.0]
     rotation: 0
     state: enabled
-- name: rational_resampler_xxx_0
-  id: rational_resampler_xxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    decim: '16000'
-    fbw: '0'
-    interp: '3969'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    taps: '[]'
-    type: ccc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [232, 144.0]
-    rotation: 0
-    state: true
 - name: soapy_sdrplay_source_0
   id: soapy_sdrplay_source
   parameters:
@@ -279,16 +346,16 @@ blocks:
     comment: ''
     dev_args: ''
     freq_correction: '0'
-    gain: '-45'
+    gain: rsp_gain
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: samp_rate
+    samp_rate: sdr_rate
     type: fc32
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 160.0]
+    coordinate: [120, 232.0]
     rotation: 0
     state: true
 
@@ -298,11 +365,12 @@ connections:
 - [blocks_short_to_float_1, '0', blocks_throttle_1_0, '0']
 - [blocks_throttle_1, '0', audio_sink_0, '0']
 - [blocks_throttle_1_0, '0', audio_sink_0, '1']
+- [low_pass_filter_0, '0', mmse_resampler_xx_0, '0']
+- [mmse_resampler_xx_0, '0', blocks_complex_to_interleaved_short_0, '0']
+- [mmse_resampler_xx_0, '0', qtgui_sink_x_0, '0']
 - [nrsc5_rx_nrsc5_rx_1, '0', blocks_short_to_float_0, '0']
 - [nrsc5_rx_nrsc5_rx_1, '1', blocks_short_to_float_1, '0']
-- [rational_resampler_xxx_0, '0', blocks_complex_to_interleaved_short_0, '0']
-- [rational_resampler_xxx_0, '0', qtgui_sink_x_0, '0']
-- [soapy_sdrplay_source_0, '0', rational_resampler_xxx_0, '0']
+- [soapy_sdrplay_source_0, '0', low_pass_filter_0, '0']
 
 metadata:
   file_format: 1

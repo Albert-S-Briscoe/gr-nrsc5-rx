@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Demo NRSC-5 flowgraph using SDRPlay
+# Title: SDRPlay NRSC-5 Receiver
 # Author: Albert Briscoe
 # GNU Radio version: 3.9.5.0
 
@@ -48,9 +48,9 @@ from gnuradio import qtgui
 class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Demo NRSC-5 flowgraph using SDRPlay", catch_exceptions=True)
+        gr.top_block.__init__(self, "SDRPlay NRSC-5 Receiver", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Demo NRSC-5 flowgraph using SDRPlay")
+        self.setWindowTitle("SDRPlay NRSC-5 Receiver")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -81,17 +81,27 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 3000000
+        self.sdr_rate = sdr_rate = 3000000
+        self.samp_rate = samp_rate = 744187.5
+        self.rsp_gain = rsp_gain = -45
         self.program = program = 0
         self.freq = freq = 915e5
+        self.audio_rate = audio_rate = 44100
 
         ##################################################
         # Blocks
         ##################################################
+        self._rsp_gain_range = Range(-47, 0, 1, -45, 200)
+        self._rsp_gain_win = RangeWidget(self._rsp_gain_range, self.set_rsp_gain, "SDR Gain", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._rsp_gain_win, 1, 0, 1, 1)
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
         self._program_options = [0, 1, 2, 3]
         # Create the labels list
-        self._program_labels = ['0', '1', '2', '3']
+        self._program_labels = ['HD-1', 'HD-2', 'HD-3', 'HD-4']
         # Create the combo box
         # Create the radio buttons
         self._program_group_box = Qt.QGroupBox("Program" + ": ")
@@ -112,8 +122,8 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
         self._program_callback(self.program)
         self._program_button_group.buttonClicked[int].connect(
             lambda i: self.set_program(self._program_options[i]))
-        self.top_grid_layout.addWidget(self._program_group_box, 1, 0, 1, 1)
-        for r in range(1, 2):
+        self.top_grid_layout.addWidget(self._program_group_box, 2, 0, 1, 1)
+        for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
@@ -132,28 +142,23 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
 
         self.soapy_sdrplay_source_0 = soapy.source(dev, "fc32", 1, '',
                                   stream_args, tune_args, settings)
-        self.soapy_sdrplay_source_0.set_sample_rate(0, samp_rate)
+        self.soapy_sdrplay_source_0.set_sample_rate(0, sdr_rate)
         self.soapy_sdrplay_source_0.set_bandwidth(0, 5000000.0)
         self.soapy_sdrplay_source_0.set_antenna(0, 'RX')
         self.soapy_sdrplay_source_0.set_gain_mode(0, False)
         self.soapy_sdrplay_source_0.set_frequency(0, freq)
         self.soapy_sdrplay_source_0.set_frequency_correction(0, 0)
-        self.soapy_sdrplay_source_0.set_gain(0, min(max(--45, 0.0), 47.0))
-        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
-                interpolation=3969,
-                decimation=16000,
-                taps=[],
-                fractional_bw=0)
+        self.soapy_sdrplay_source_0.set_gain(0, min(max(-rsp_gain, 0.0), 47.0))
         self.qtgui_sink_x_0 = qtgui.sink_c(
             1024, #fftsize
             window.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
-            744187.5, #bw
+            samp_rate, #bw
             "", #name
             True, #plotfreq
             True, #plotwaterfall
             True, #plottime
-            True, #plotconst
+            False, #plotconst
             None # parent
         )
         self.qtgui_sink_x_0.set_update_time(1.0/10)
@@ -161,18 +166,28 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
 
         self.qtgui_sink_x_0.enable_rf_freq(False)
 
-        self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win, 2, 0, 10, 1)
-        for r in range(2, 12):
+        self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win, 3, 0, 10, 1)
+        for r in range(3, 13):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.nrsc5_rx_nrsc5_rx_1 = nrsc5_rx.nrsc5_rx(program, False)
-        self.blocks_throttle_1_0 = blocks.throttle(gr.sizeof_float*1, 44100,True)
-        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, 44100,True)
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, sdr_rate/samp_rate)
+        self.low_pass_filter_0 = filter.fir_filter_ccf(
+            1,
+            firdes.low_pass(
+                1,
+                sdr_rate,
+                320000,
+                50000,
+                window.WIN_HAMMING,
+                6.76))
+        self.blocks_throttle_1_0 = blocks.throttle(gr.sizeof_float*1, audio_rate,True)
+        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, audio_rate,True)
         self.blocks_short_to_float_1 = blocks.short_to_float(1, 32767)
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 32767)
         self.blocks_complex_to_interleaved_short_0 = blocks.complex_to_interleaved_short(True,32767)
-        self.audio_sink_0 = audio.sink(44100, '', True)
+        self.audio_sink_0 = audio.sink(audio_rate, '', True)
 
 
         ##################################################
@@ -183,11 +198,12 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_short_to_float_1, 0), (self.blocks_throttle_1_0, 0))
         self.connect((self.blocks_throttle_1, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_throttle_1_0, 0), (self.audio_sink_0, 1))
+        self.connect((self.low_pass_filter_0, 0), (self.mmse_resampler_xx_0, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.blocks_complex_to_interleaved_short_0, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.nrsc5_rx_nrsc5_rx_1, 0), (self.blocks_short_to_float_0, 0))
         self.connect((self.nrsc5_rx_nrsc5_rx_1, 1), (self.blocks_short_to_float_1, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_complex_to_interleaved_short_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.qtgui_sink_x_0, 0))
-        self.connect((self.soapy_sdrplay_source_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.soapy_sdrplay_source_0, 0), (self.low_pass_filter_0, 0))
 
 
     def closeEvent(self, event):
@@ -198,12 +214,29 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_sdr_rate(self):
+        return self.sdr_rate
+
+    def set_sdr_rate(self, sdr_rate):
+        self.sdr_rate = sdr_rate
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sdr_rate, 320000, 50000, window.WIN_HAMMING, 6.76))
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.sdr_rate/self.samp_rate)
+        self.soapy_sdrplay_source_0.set_sample_rate(0, self.sdr_rate)
+
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.soapy_sdrplay_source_0.set_sample_rate(0, self.samp_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.sdr_rate/self.samp_rate)
+        self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
+
+    def get_rsp_gain(self):
+        return self.rsp_gain
+
+    def set_rsp_gain(self, rsp_gain):
+        self.rsp_gain = rsp_gain
+        self.soapy_sdrplay_source_0.set_gain(0, min(max(-self.rsp_gain, 0.0), 47.0))
 
     def get_program(self):
         return self.program
@@ -219,6 +252,14 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
     def set_freq(self, freq):
         self.freq = freq
         self.soapy_sdrplay_source_0.set_frequency(0, self.freq)
+
+    def get_audio_rate(self):
+        return self.audio_rate
+
+    def set_audio_rate(self, audio_rate):
+        self.audio_rate = audio_rate
+        self.blocks_throttle_1.set_sample_rate(self.audio_rate)
+        self.blocks_throttle_1_0.set_sample_rate(self.audio_rate)
 
 
 
