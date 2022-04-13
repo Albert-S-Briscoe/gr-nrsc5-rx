@@ -9,32 +9,36 @@
 #define INCLUDED_NRSC5_RX_NRSC5_RX_IMPL_H
 
 #include <nrsc5_rx/nrsc5_rx.h>
+#include <queue>
 
 namespace gr {
-  namespace nrsc5_rx {
+namespace nrsc5_rx {
 
-    class nrsc5_rx_impl : public nrsc5_rx
-    {
-     private:
-      nrsc5_t* nrsc5;
-      bool _test;
+	class nrsc5_rx_impl : public nrsc5_rx {
+	private:
+		bool _test;
 
-     public:
-      nrsc5_rx_impl(bool test);
-      ~nrsc5_rx_impl();
+		nrsc5_t* nrsc5;
 
-      // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+	public:
+		nrsc5_rx_impl(int program, bool test);
+		~nrsc5_rx_impl();
 
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+		// Where all the action really happens
+		void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+		int general_work(int noutput_items,
+		gr_vector_int &ninput_items,
+		gr_vector_const_void_star &input_items,
+		gr_vector_void_star &output_items);
 
     };
 
   } // namespace nrsc5_rx
 } // namespace gr
+
+unsigned int _program;
+std::queue<uint16_t> audio_queue;
 
 void nrsc5_rx_callback(const nrsc5_event_t *evt, void *opaque);
 

@@ -4,7 +4,7 @@ category: '[nrsc5_rx]'
 
 templates:
   imports: import nrsc5_rx
-  make: nrsc5_rx.nrsc5_rx(${test})
+  make: nrsc5_rx.nrsc5_rx(${program}, ${test})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -17,6 +17,10 @@ parameters:
   label: Testing Parameter
   dtype: bool
   default: true
+- id: program
+  label: Audio Program
+  dtype: int
+  default: 0
 #- id: ...
 #  label: ...
 #  dtype: ...
@@ -45,7 +49,7 @@ outputs:
   domain: stream
 #  dtype: float
   dtype: short
-  vlen: 2
+#  vlen: 2
 
 #- label: Rout
 #  domain: stream

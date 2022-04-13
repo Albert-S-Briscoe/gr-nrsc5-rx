@@ -36,7 +36,7 @@ namespace gr {
        * class. nrsc5_rx::nrsc5_rx::make is the public interface for
        * creating new instances.
        */
-      static sptr make(bool test=true);
+      static sptr make(int program=0, bool test=true);
     };
 
   } // namespace nrsc5_rx
