@@ -4,7 +4,9 @@ category: '[nrsc5_rx]'
 
 templates:
   imports: import nrsc5_rx
-  make: nrsc5_rx.nrsc5_rx(${program}, ${test})
+  make: nrsc5_rx.nrsc5_rx(${program}, False)
+  callbacks:
+  - set_program(${program})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -13,10 +15,6 @@ templates:
 #     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 #     * default
 parameters:
-- id: test
-  label: Testing Parameter
-  dtype: bool
-  default: true
 - id: program
   label: Audio Program
   dtype: int
@@ -63,11 +61,12 @@ outputs:
 #  optional: ...
 
 documentation: |-
-  Currently incomplete. Audio output is disabled until I have a callback function.
   Input is complex float 16 (output of 'Complex To IShort' with 'Vector Output' on) at
   exactly 744187.5 samples/sec or complex float 8 at exactly 1488375 samples/sec.
-  Output will be 44100hz? audio, possibly padded with zeros
 
+  Output is 44100hz audio.
+
+  The block in general is a bit strange, so take a look at the example flowgraph.
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.

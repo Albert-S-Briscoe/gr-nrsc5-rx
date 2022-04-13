@@ -101,11 +101,16 @@ namespace gr {
 
 			consume_each (ninput_items[0]);
 
-			if (n > 0)
-				std::cerr << "n=" << n << " ninputitems: " << ninput_items[0] << "\n";
+//			if (n > 0)
+//				std::cerr << "n=" << n << " ninputitems: " << ninput_items[0] << "\n";
 
 			// Tell runtime system how many output items we produced.
 			return n;
+		}
+
+		void nrsc5_rx_impl::set_program(int program) {
+			std::cerr << "program: " << program << "\n";
+			_program = program;
 		}
 
 	} /* namespace nrsc5_rx */
@@ -131,7 +136,7 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 		case NRSC5_EVENT_AUDIO: // Audio
 //			std::cerr << "NRSC5_EVENT_AUDIO\n";
 			if (event->audio.program == _program) {
-				std::cerr << "    Program: " << event->audio.program << " count: " << event->audio.count << "\n";
+//				std::cerr << "    Program: " << event->audio.program << " count: " << event->audio.count << "\n";
 				for (int i = 0; i < 2048; i++) {
 //					std::cerr << " " << (event->audio.data)[i];
 					left_audio_queue.push((event->audio.data)[2*i]);

@@ -37,6 +37,8 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(int program=0, bool test=true);
+
+      virtual void set_program(int program) = 0;
     };
 
   } // namespace nrsc5_rx

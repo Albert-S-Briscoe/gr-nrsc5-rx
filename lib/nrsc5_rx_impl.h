@@ -20,6 +20,8 @@ namespace nrsc5_rx {
 
 		nrsc5_t* nrsc5;
 
+        void set_program(int program) override;
+
 	public:
 		nrsc5_rx_impl(int program, bool test);
 		~nrsc5_rx_impl();
@@ -31,7 +33,6 @@ namespace nrsc5_rx {
 		gr_vector_int &ninput_items,
 		gr_vector_const_void_star &input_items,
 		gr_vector_void_star &output_items);
-
     };
 
   } // namespace nrsc5_rx
