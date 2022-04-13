@@ -19,6 +19,9 @@
  static const char *__doc_gr_nrsc5_rx_nrsc5_rx = R"doc()doc";
 
 
+ static const char *__doc_gr_nrsc5_rx_nrsc5_rx_nrsc5_rx = R"doc()doc";
+
+
  static const char *__doc_gr_nrsc5_rx_nrsc5_rx_make = R"doc()doc";
 
   
