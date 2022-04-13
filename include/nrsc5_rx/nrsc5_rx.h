@@ -10,7 +10,11 @@
 
 #include <gnuradio/block.h>
 #include <nrsc5_rx/api.h>
-#include <nrsc5_rx/nrsc5.h>
+
+//#include <nrsc5_rx/nrsc5.h>
+extern "C" {
+#include <nrsc5.h>
+}
 
 namespace gr {
   namespace nrsc5_rx {

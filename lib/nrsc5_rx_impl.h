@@ -24,10 +24,10 @@ namespace gr {
       ~nrsc5_rx_impl();
 
       // Where all the action really happens
-//      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
       int general_work(int noutput_items,
-           int &ninput_items,
+           gr_vector_int &ninput_items,
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
@@ -35,5 +35,7 @@ namespace gr {
 
   } // namespace nrsc5_rx
 } // namespace gr
+
+void nrsc5_rx_callback(const nrsc5_event_t *evt, void *opaque);
 
 #endif /* INCLUDED_NRSC5_RX_NRSC5_RX_IMPL_H */

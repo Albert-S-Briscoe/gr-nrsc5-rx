@@ -11,7 +11,7 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND nrsc5_rx_sources
-    nrsc5.cc
+#    nrsc5.cc
     nrsc5_rx_impl.cc
 )
 

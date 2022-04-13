@@ -41,9 +41,12 @@ inputs:
 
 outputs:
 # disabled until I have a callback function
-#- label: Lout
-#  domain: stream
+- label: Lout
+  domain: stream
 #  dtype: float
+  dtype: short
+  vlen: 2
+
 #- label: Rout
 #  domain: stream
 #  dtype: float

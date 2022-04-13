@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(nrsc5_rx.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(2c8ce1e518eea78fa0725cb877e19c26)                     */
+/* BINDTOOL_HEADER_FILE_HASH(15904769fe2dd1c084376726287b396f)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -33,7 +33,7 @@ void bind_nrsc5_rx(py::module& m)
     using nrsc5_rx    = gr::nrsc5_rx::nrsc5_rx;
 
 
-    py::class_<nrsc5_rx,
+    py::class_<nrsc5_rx, gr::block, gr::basic_block,
         std::shared_ptr<nrsc5_rx>>(m, "nrsc5_rx", D(nrsc5_rx))
 
         .def(py::init(&nrsc5_rx::make),
