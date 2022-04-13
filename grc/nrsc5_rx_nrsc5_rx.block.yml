@@ -49,11 +49,11 @@ outputs:
   domain: stream
 #  dtype: float
   dtype: short
-#  vlen: 2
 
-#- label: Rout
-#  domain: stream
+- label: Rout
+  domain: stream
 #  dtype: float
+  dtype: short
 
 
 #- label: ...

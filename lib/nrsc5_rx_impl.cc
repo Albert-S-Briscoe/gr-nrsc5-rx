@@ -28,8 +28,7 @@ namespace gr {
 		nrsc5_rx_impl::nrsc5_rx_impl(int program, bool test)
 			: gr::block("nrsc5_rx",
 				gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, 2 * sizeof(int16_t)),
-				gr::io_signature::make(1 /* min outputs */, 1 /*max outputs */, sizeof(int16_t)))
-				// above is temporary
+				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(int16_t)))
 		{
 			_test = test;
 
@@ -64,7 +63,7 @@ namespace gr {
 			for(unsigned i = 0; i < ninputs; i++) {
 //				ninput_items_required[i] = noutput_items;
 //				std::cerr << "input" << i << " needs: " << (noutput_items * 135) / 8 << "\n";
-				ninput_items_required[i] = (noutput_items * 135) / 16;
+				ninput_items_required[i] = (noutput_items * 135) / 8;
 			}
 
 			// add a case here for when nrsc5 doesn't have sync
@@ -81,10 +80,8 @@ namespace gr {
 			//auto in = static_cast<const input_type*>(input_items[0]);
 			const int16_t* in = static_cast<const int16_t*>(input_items[0]);
 
-			// disabled until I have a callback function
 			auto out0 = static_cast<int16_t*>(output_items[0]);
-//			auto out0 = static_cast<output_type*>(output_items[0]);
-//			auto out1 = static_cast<output_type*>(output_items[1]);
+			auto out1 = static_cast<int16_t*>(output_items[1]);
 
 			// Do <+signal processing+>
 			// Tell runtime system how many input items we consumed on
@@ -92,11 +89,13 @@ namespace gr {
 			nrsc5_pipe_samples_cs16(nrsc5, in, 2 * ninput_items[0]);
 
 			for (int i = 0; i < ninput_items[0]; i++) {
-				if (audio_queue.empty())
+				if (left_audio_queue.empty() || right_audio_queue.empty())
 					break;
 //				out0[i] = in[i];
-				out0[i] = audio_queue.front();
-				audio_queue.pop();
+				out0[i] = left_audio_queue.front();
+				out1[i] = right_audio_queue.front();
+				left_audio_queue.pop();
+				right_audio_queue.pop();
 				n = i;
 			}
 
@@ -133,9 +132,10 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 //			std::cerr << "NRSC5_EVENT_AUDIO\n";
 			if (event->audio.program == _program) {
 				std::cerr << "    Program: " << event->audio.program << " count: " << event->audio.count << "\n";
-				for (int i = 0; i < 4096; i++) {
+				for (int i = 0; i < 2048; i++) {
 //					std::cerr << " " << (event->audio.data)[i];
-					audio_queue.push((event->audio.data)[i]);
+					left_audio_queue.push((event->audio.data)[2*i]);
+					right_audio_queue.push((event->audio.data)[2*i+1]);
 				}
 //				audio_queue.push(event->audio.data);
 			}
