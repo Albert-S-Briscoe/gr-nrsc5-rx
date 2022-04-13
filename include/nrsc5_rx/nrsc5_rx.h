@@ -8,10 +8,9 @@
 #ifndef INCLUDED_NRSC5_RX_NRSC5_RX_H
 #define INCLUDED_NRSC5_RX_NRSC5_RX_H
 
-#include <gnuradio/block.h>
 #include <nrsc5_rx/api.h>
+#include <gnuradio/block.h>
 
-//#include <nrsc5_rx/nrsc5.h>
 extern "C" {
 #include <nrsc5.h>
 }

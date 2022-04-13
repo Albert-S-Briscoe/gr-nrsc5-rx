@@ -21,7 +21,6 @@ namespace py = pybind11;
 // Please do not delete
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
-//    void bind_nrsc5(py::module& m);
     void bind_nrsc5_rx(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
@@ -51,7 +50,6 @@ PYBIND11_MODULE(nrsc5_rx_python, m)
     // Please do not delete
     /**************************************/
     // BINDING_FUNCTION_CALLS(
-//    bind_nrsc5(m);
     bind_nrsc5_rx(m);
     // ) END BINDING_FUNCTION_CALLS
 }

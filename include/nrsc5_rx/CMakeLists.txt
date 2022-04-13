@@ -11,6 +11,5 @@
 ########################################################################
 install(FILES
     api.h
-#    nrsc5.h
     nrsc5_rx.h DESTINATION include/nrsc5_rx
 )

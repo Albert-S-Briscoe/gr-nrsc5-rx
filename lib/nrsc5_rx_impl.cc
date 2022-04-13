@@ -5,10 +5,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-/*extern "C" {
-#include "nrsc5.h"
-}*/
-
 #include "nrsc5_rx_impl.h"
 
 #include <gnuradio/io_signature.h>
@@ -58,7 +54,6 @@ namespace gr {
 
 		void
 		nrsc5_rx_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required) {
-			//#pragma message("implement a forecast that fills in how many items on each input you need to produce noutput_items and remove this warning")
 			/* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
 			unsigned ninputs = ninput_items_required.size ();
 			for(unsigned i = 0; i < ninputs; i++)
@@ -79,7 +74,6 @@ namespace gr {
 //			auto out0 = static_cast<output_type*>(output_items[0]);
 //			auto out1 = static_cast<output_type*>(output_items[1]);
 
-			//#pragma message("Implement the signal processing in your block and remove this warning")
 			// Do <+signal processing+>
 			// Tell runtime system how many input items we consumed on
 			// each input stream.

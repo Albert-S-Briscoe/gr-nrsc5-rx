@@ -11,7 +11,6 @@
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND nrsc5_rx_sources
-#    nrsc5.cc
     nrsc5_rx_impl.cc
 )
 
@@ -59,7 +58,7 @@ list(APPEND test_nrsc5_rx_sources
 )
 # Anything we need to link to for the unit tests go here
 list(APPEND GR_TEST_TARGET_DEPS
-gnuradio-nrsc5_rx
+    gnuradio-nrsc5_rx
 )
 
 if(NOT test_nrsc5_rx_sources)
