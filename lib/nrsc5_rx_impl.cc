@@ -13,8 +13,6 @@
 namespace gr {
 	namespace nrsc5_rx {
 
-//		using input_type = int16_t;
-//		using output_type = float;
 		nrsc5_rx::sptr
 		nrsc5_rx::make(int program, bool test)
 		{
@@ -28,7 +26,7 @@ namespace gr {
 		nrsc5_rx_impl::nrsc5_rx_impl(int program, bool test)
 			: gr::block("nrsc5_rx",
 				gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, 2 * sizeof(int16_t)),
-				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(int16_t)))
+				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(float)))
 		{
 			_test = test;
 
@@ -80,8 +78,8 @@ namespace gr {
 			//auto in = static_cast<const input_type*>(input_items[0]);
 			const int16_t* in = static_cast<const int16_t*>(input_items[0]);
 
-			auto out0 = static_cast<int16_t*>(output_items[0]);
-			auto out1 = static_cast<int16_t*>(output_items[1]);
+			auto out0 = static_cast<float*>(output_items[0]);
+			auto out1 = static_cast<float*>(output_items[1]);
 
 			// Do <+signal processing+>
 			// Tell runtime system how many input items we consumed on
@@ -92,9 +90,8 @@ namespace gr {
 			for (int i = 0; i < noutput_items * 2; i++, n++) {
 				if (left_audio_queue.empty() || right_audio_queue.empty())
 					break;
-//				out0[i] = in[i];
-				out0[i] = left_audio_queue.front();
-				out1[i] = right_audio_queue.front();
+				out0[i] = (float)left_audio_queue.front() / 32767;
+				out1[i] = (float)right_audio_queue.front() / 32767;
 				left_audio_queue.pop();
 				right_audio_queue.pop();
 			}

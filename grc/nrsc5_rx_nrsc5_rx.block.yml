@@ -45,13 +45,11 @@ outputs:
 # disabled until I have a callback function
 - label: Lout
   domain: stream
-#  dtype: float
-  dtype: short
+  dtype: float
 
 - label: Rout
   domain: stream
-#  dtype: float
-  dtype: short
+  dtype: float
 
 
 #- label: ...

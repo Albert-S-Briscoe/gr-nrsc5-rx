@@ -182,8 +182,6 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
                 50000,
                 window.WIN_HAMMING,
                 6.76))
-        self.blocks_short_to_float_1 = blocks.short_to_float(1, 32767)
-        self.blocks_short_to_float_0 = blocks.short_to_float(1, 32767)
         self.blocks_complex_to_interleaved_short_0 = blocks.complex_to_interleaved_short(True,32767)
         self.audio_sink_0 = audio.sink(audio_rate, '', True)
 
@@ -192,13 +190,11 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.connect((self.blocks_complex_to_interleaved_short_0, 0), (self.nrsc5_rx_nrsc5_rx_1, 0))
-        self.connect((self.blocks_short_to_float_0, 0), (self.audio_sink_0, 0))
-        self.connect((self.blocks_short_to_float_1, 0), (self.audio_sink_0, 1))
         self.connect((self.low_pass_filter_0, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.mmse_resampler_xx_0, 0), (self.blocks_complex_to_interleaved_short_0, 0))
         self.connect((self.mmse_resampler_xx_0, 0), (self.qtgui_sink_x_0, 0))
-        self.connect((self.nrsc5_rx_nrsc5_rx_1, 0), (self.blocks_short_to_float_0, 0))
-        self.connect((self.nrsc5_rx_nrsc5_rx_1, 1), (self.blocks_short_to_float_1, 0))
+        self.connect((self.nrsc5_rx_nrsc5_rx_1, 0), (self.audio_sink_0, 0))
+        self.connect((self.nrsc5_rx_nrsc5_rx_1, 1), (self.audio_sink_0, 1))
         self.connect((self.soapy_sdrplay_source_0, 0), (self.low_pass_filter_0, 0))
 
 

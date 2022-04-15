@@ -155,7 +155,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1384, 264.0]
+    coordinate: [1144, 264.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_interleaved_short_0
@@ -175,40 +175,6 @@ blocks:
     coordinate: [784, 264.0]
     rotation: 0
     state: enabled
-- name: blocks_short_to_float_0
-  id: blocks_short_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '32767'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1184, 248.0]
-    rotation: 0
-    state: true
-- name: blocks_short_to_float_1
-  id: blocks_short_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '32767'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1184, 296.0]
-    rotation: 0
-    state: true
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -264,7 +230,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 264.0]
+    coordinate: [968, 264.0]
     rotation: 0
     state: true
 - name: qtgui_sink_x_0
@@ -656,13 +622,11 @@ blocks:
 
 connections:
 - [blocks_complex_to_interleaved_short_0, '0', nrsc5_rx_nrsc5_rx_1, '0']
-- [blocks_short_to_float_0, '0', audio_sink_0, '0']
-- [blocks_short_to_float_1, '0', audio_sink_0, '1']
 - [low_pass_filter_0, '0', mmse_resampler_xx_0, '0']
 - [mmse_resampler_xx_0, '0', blocks_complex_to_interleaved_short_0, '0']
 - [mmse_resampler_xx_0, '0', qtgui_sink_x_0, '0']
-- [nrsc5_rx_nrsc5_rx_1, '0', blocks_short_to_float_0, '0']
-- [nrsc5_rx_nrsc5_rx_1, '1', blocks_short_to_float_1, '0']
+- [nrsc5_rx_nrsc5_rx_1, '0', audio_sink_0, '0']
+- [nrsc5_rx_nrsc5_rx_1, '1', audio_sink_0, '1']
 - [rtlsdr_source_0, '0', low_pass_filter_0, '0']
 
 metadata:
