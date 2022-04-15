@@ -6,5 +6,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 install(FILES
-    nrsc5_rx_nrsc5_rx.block.yml DESTINATION share/gnuradio/grc/blocks
+    nrsc5_rx_nrsc5_rx.block.yml
+    nrsc5_rx_nrsc_5_receiver.block.yml DESTINATION share/gnuradio/grc/blocks
 )
