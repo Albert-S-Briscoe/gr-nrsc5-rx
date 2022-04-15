@@ -22,7 +22,7 @@ if(NOT nrsc5_rx_sources)
 endif(NOT nrsc5_rx_sources)
 
 add_library(gnuradio-nrsc5_rx SHARED ${nrsc5_rx_sources})
-target_link_libraries(gnuradio-nrsc5_rx gnuradio::gnuradio-runtime ${NRSC5_LIBRARIES})
+target_link_libraries(gnuradio-nrsc5_rx gnuradio::gnuradio-runtime ${NRSC5_LIBRARIES} gnuradio::gnuradio-blocks gnuradio::gnuradio-filter)
 target_include_directories(gnuradio-nrsc5_rx
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>

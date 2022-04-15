@@ -71,15 +71,14 @@ cpp_templates:
 
 
 documentation: |-
+  Not intended for normal use.
+
   Input is complex short (output of "Complex To IShort" with "Vector Output" on) at
   exactly 744187.5 samples/sec.
   It could also work with complex char at exactly 1488375 samples/sec, but
   nrsc5 internally converts it back to short (at 744187.5 S/sec?), so I didn't bother.
 
   Output is 44100hz audio.
-
-  There are two example flowgraphs that convert to the strange input rate automatically
-  (one for rtl-sdr and the other for sdrplay).
 
   This block should support both Python and C++ output
 

@@ -19,9 +19,15 @@
  static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver = R"doc()doc";
 
 
- static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver_nrsc_5_receiver = R"doc()doc";
+ static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver_nrsc_5_receiver_0 = R"doc()doc";
+
+
+ static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver_nrsc_5_receiver_1 = R"doc()doc";
 
 
  static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver_make = R"doc()doc";
+
+
+ static const char *__doc_gr_nrsc5_rx_nrsc_5_receiver_set_program = R"doc()doc";
 
   

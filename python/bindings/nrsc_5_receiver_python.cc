@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(nrsc_5_receiver.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(e62c71602390a7d116368c27f4497dd0)                     */
+/* BINDTOOL_HEADER_FILE_HASH(08f76c148e1885e8f36a5f3c542ab741)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -30,18 +30,28 @@ namespace py = pybind11;
 void bind_nrsc_5_receiver(py::module& m)
 {
 
-    using nrsc_5_receiver    = gr::nrsc5_rx::nrsc_5_receiver;
+    using nrsc_5_receiver    = ::gr::nrsc5_rx::nrsc_5_receiver;
 
 
     py::class_<nrsc_5_receiver, gr::hier_block2,
         std::shared_ptr<nrsc_5_receiver>>(m, "nrsc_5_receiver", D(nrsc_5_receiver))
 
         .def(py::init(&nrsc_5_receiver::make),
+           py::arg("program") = 0,
+           py::arg("samp_rate") = 1200000,
+           py::arg("audio_rate") = 44100,
            D(nrsc_5_receiver,make)
         )
         
 
 
+
+
+        
+        .def("set_program",&nrsc_5_receiver::set_program,       
+            py::arg("program"),
+            D(nrsc_5_receiver,set_program)
+        )
 
         ;
 

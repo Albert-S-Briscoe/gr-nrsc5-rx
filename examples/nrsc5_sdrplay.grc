@@ -36,13 +36,13 @@ blocks:
 - name: audio_rate
   id: variable
   parameters:
-    comment: Must be 44.1khz
+    comment: ''
     value: '44100'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 8.0]
+    coordinate: [264, 8.0]
     rotation: 0
     state: true
 - name: freq
@@ -63,7 +63,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 8.0]
+    coordinate: [528, 8.0]
     rotation: 0
     state: true
 - name: program
@@ -93,7 +93,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [976, 12.0]
+    coordinate: [800, 12.0]
     rotation: 0
     state: true
 - name: rsp_gain
@@ -114,22 +114,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 8.0]
+    coordinate: [656, 8.0]
     rotation: 0
     state: true
 - name: samp_rate
-  id: variable
-  parameters:
-    comment: Must be 744187.5
-    value: '744187.5'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [280, 8.0]
-    rotation: 0
-    state: enabled
-- name: sdr_rate
   id: variable
   parameters:
     comment: ''
@@ -155,82 +143,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 264.0]
+    coordinate: [552, 256.0]
     rotation: 0
     state: enabled
-- name: blocks_complex_to_interleaved_short_0
-  id: blocks_complex_to_interleaved_short
+- name: nrsc5_rx_nrsc_5_receiver_0
+  id: nrsc5_rx_nrsc_5_receiver
   parameters:
     affinity: ''
     alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale_factor: '32767'
-    vector_output: 'True'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [784, 264.0]
-    rotation: 0
-    state: enabled
-- name: low_pass_filter_0
-  id: low_pass_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    beta: '6.76'
-    comment: ''
-    cutoff_freq: '320000'
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: sdr_rate
-    type: fir_filter_ccf
-    width: '50000'
-    win: window.WIN_HAMMING
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [320, 188.0]
-    rotation: 0
-    state: enabled
-- name: mmse_resampler_xx_0
-  id: mmse_resampler_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    phase_shift: '0'
-    resamp_ratio: sdr_rate/samp_rate
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [536, 248.0]
-    rotation: 0
-    state: enabled
-- name: nrsc5_rx_nrsc5_rx_1
-  id: nrsc5_rx_nrsc5_rx
-  parameters:
-    affinity: ''
-    alias: ''
+    audio_rate: audio_rate
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     program: program
+    samp_rate: samp_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 264.0]
+    coordinate: [368, 248.0]
     rotation: 0
     state: true
 - name: qtgui_sink_x_0
@@ -259,7 +190,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 144.0]
+    coordinate: [368, 120.0]
     rotation: 0
     state: enabled
 - name: soapy_sdrplay_source_0
@@ -277,24 +208,21 @@ blocks:
     gain: rsp_gain
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: sdr_rate
+    samp_rate: samp_rate
     type: fc32
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [120, 232.0]
+    coordinate: [136, 256.0]
     rotation: 0
     state: true
 
 connections:
-- [blocks_complex_to_interleaved_short_0, '0', nrsc5_rx_nrsc5_rx_1, '0']
-- [low_pass_filter_0, '0', mmse_resampler_xx_0, '0']
-- [mmse_resampler_xx_0, '0', blocks_complex_to_interleaved_short_0, '0']
-- [mmse_resampler_xx_0, '0', qtgui_sink_x_0, '0']
-- [nrsc5_rx_nrsc5_rx_1, '0', audio_sink_0, '0']
-- [nrsc5_rx_nrsc5_rx_1, '1', audio_sink_0, '1']
-- [soapy_sdrplay_source_0, '0', low_pass_filter_0, '0']
+- [nrsc5_rx_nrsc_5_receiver_0, '0', audio_sink_0, '0']
+- [nrsc5_rx_nrsc_5_receiver_0, '1', audio_sink_0, '1']
+- [soapy_sdrplay_source_0, '0', nrsc5_rx_nrsc_5_receiver_0, '0']
+- [soapy_sdrplay_source_0, '0', qtgui_sink_x_0, '0']
 
 metadata:
   file_format: 1

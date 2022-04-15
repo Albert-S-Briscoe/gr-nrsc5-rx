@@ -29,6 +29,7 @@ include(GrPybind)
 ########################################################################
 list(APPEND nrsc5_rx_python_files
     nrsc5_rx_python.cc
+    nrsc_5_receiver_python.cc
     python_bindings.cc
 )
 
