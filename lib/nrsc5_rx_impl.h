@@ -39,8 +39,8 @@ namespace nrsc5_rx {
 } // namespace gr
 
 unsigned int _program;
-std::queue<uint16_t> left_audio_queue;
-std::queue<uint16_t> right_audio_queue;
+std::queue<int16_t> left_audio_queue;
+std::queue<int16_t> right_audio_queue;
 
 void nrsc5_rx_callback(const nrsc5_event_t *evt, void *opaque);
 

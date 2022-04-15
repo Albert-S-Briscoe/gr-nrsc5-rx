@@ -12,6 +12,7 @@
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND nrsc5_rx_sources
     nrsc5_rx_impl.cc
+    nrsc_5_receiver_impl.cc
 )
 
 set(nrsc5_rx_sources "${nrsc5_rx_sources}" PARENT_SCOPE)
