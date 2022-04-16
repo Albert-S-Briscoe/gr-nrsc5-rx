@@ -21,6 +21,7 @@ namespace nrsc5_rx {
 		nrsc5_t* nrsc5;
 
         void set_program(int program) override;
+        int get_sync() override;
 
 	public:
 		nrsc5_rx_impl(int program, bool test);
@@ -38,6 +39,7 @@ namespace nrsc5_rx {
   } // namespace nrsc5_rx
 } // namespace gr
 
+int nrsc5_sync;
 unsigned int _program;
 std::queue<int16_t> left_audio_queue;
 std::queue<int16_t> right_audio_queue;

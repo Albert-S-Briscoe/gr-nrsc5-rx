@@ -29,6 +29,7 @@ namespace gr {
 				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(float)))
 		{
 			_test = test;
+			nrsc5_sync = 0;
 
 			if ((program >= 0) && (program < 4))
 				_program = program;
@@ -110,6 +111,10 @@ namespace gr {
 			_program = program;
 		}
 
+		int nrsc5_rx_impl::get_sync() {
+			return nrsc5_sync;
+		}
+
 	} /* namespace nrsc5_rx */
 } /* namespace gr */
 
@@ -144,9 +149,11 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			break;
 		case NRSC5_EVENT_SYNC: // Got sync
 			std::cerr << "NRSC5_EVENT_SYNC\n";
+			nrsc5_sync = 1;
 			break;
 		case NRSC5_EVENT_LOST_SYNC: // Sync lost
 			std::cerr << "NRSC5_EVENT_LOST_SYNC\n";
+			nrsc5_sync = 0;
 			break;
 		case NRSC5_EVENT_ID3: // ID3 information?
 			std::cerr << "NRSC5_EVENT_ID3\n";
