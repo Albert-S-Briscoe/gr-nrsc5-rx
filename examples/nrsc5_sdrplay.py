@@ -175,8 +175,8 @@ class nrsc5_sdrplay(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.nrsc5_rx_nrsc_5_receiver_0, 0), (self.audio_sink_0, 0))
         self.connect((self.nrsc5_rx_nrsc_5_receiver_0, 1), (self.audio_sink_0, 1))
+        self.connect((self.nrsc5_rx_nrsc_5_receiver_0, 0), (self.audio_sink_0, 0))
         self.connect((self.soapy_sdrplay_source_0, 0), (self.nrsc5_rx_nrsc_5_receiver_0, 0))
         self.connect((self.soapy_sdrplay_source_0, 0), (self.qtgui_sink_x_0, 0))
 

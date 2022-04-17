@@ -9,6 +9,7 @@
 
 #include <gnuradio/io_signature.h>
 #include <stdexcept>
+#include <string>
 
 namespace gr {
 	namespace nrsc5_rx {
@@ -28,8 +29,11 @@ namespace gr {
 				gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, 2 * sizeof(int16_t)),
 				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(float)))
 		{
+			message_port_register_out(pmt::mp("SIS"));
+
 			_test = test;
 			nrsc5_sync = 0;
+			new_sis_message = 0;
 
 			if ((program >= 0) && (program < 4))
 				_program = program;
@@ -99,6 +103,13 @@ namespace gr {
 
 			consume_each (ninput_items[0]);
 
+			// output SIS information
+			if (new_sis_message) {
+				message_port_pub(pmt::mp("SIS"), pmt_message);
+				new_sis_message = 0;
+//				std::cerr << "Sent SIS\n";
+			}
+
 //			if (n > 0)
 //				std::cerr << "produced=" << n << " input: " << ninput_items[0] << " wanted: " << noutput_items << " size: " << left_audio_queue.size() << "\n";
 
@@ -120,17 +131,21 @@ namespace gr {
 
 void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 	switch (event->event) {
-		case NRSC5_EVENT_LOST_DEVICE: // rtl_sdr disconnected. I doubt I'll need this
-			std::cerr << "NRSC5_EVENT_LOST_DEVICE\n";
+		case NRSC5_EVENT_LOST_DEVICE: // rtl_sdr disconnected. I doubt I'll need this (because I'm piping data)
+//			std::cerr << "NRSC5_EVENT_LOST_DEVICE\n";
+			nrsc5_sync = 0;
 			break;
+
+		// use these for signal level?
 		case NRSC5_EVENT_BER: // Bit Error Rate
-			std::cerr << "NRSC5_EVENT_BER\n";
+//			std::cerr << "NRSC5_EVENT_BER\n";
 			break;
 		case NRSC5_EVENT_MER: // Modulation Error Ratio?
-			std::cerr << "NRSC5_EVENT_MER\n";
+//			std::cerr << "NRSC5_EVENT_MER\n";
 			break;
+
 		case NRSC5_EVENT_IQ: // IQ data
-			std::cerr << "NRSC5_EVENT_IQ\n";
+//			std::cerr << "NRSC5_EVENT_IQ\n";
 			break;
 		case NRSC5_EVENT_HDC: // HDC audio packet?
 //			std::cerr << "NRSC5_EVENT_HDC\n";
@@ -148,15 +163,15 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			}
 			break;
 		case NRSC5_EVENT_SYNC: // Got sync
-			std::cerr << "NRSC5_EVENT_SYNC\n";
+//			std::cerr << "NRSC5_EVENT_SYNC\n";
 			nrsc5_sync = 1;
 			break;
 		case NRSC5_EVENT_LOST_SYNC: // Sync lost
-			std::cerr << "NRSC5_EVENT_LOST_SYNC\n";
+//			std::cerr << "NRSC5_EVENT_LOST_SYNC\n";
 			nrsc5_sync = 0;
 			break;
 		case NRSC5_EVENT_ID3: // ID3 information?
-			std::cerr << "NRSC5_EVENT_ID3\n";
+//			std::cerr << "NRSC5_EVENT_ID3\n";
 			break;
 		case NRSC5_EVENT_SIG: // Service information?
 			std::cerr << "NRSC5_EVENT_SIG\n";
@@ -165,7 +180,36 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			std::cerr << "NRSC5_EVENT_LOT\n";
 			break;
 		case NRSC5_EVENT_SIS: // Station information
-			std::cerr << "NRSC5_EVENT_SIS\n";
+//			std::cerr << "NRSC5_EVENT_SIS\n";
+
+/*			fprintf(stderr, "name            \"%s\"\n", event->sis.name);
+			fprintf(stderr, "slogan          \"%s\"\n", event->sis.slogan);
+			fprintf(stderr, "message         \"%s\"\n", event->sis.message);
+			fprintf(stderr, "alert           \"%s\"\n", event->sis.alert);
+			fprintf(stderr, "country_code    \"%s\"\n", event->sis.country_code);
+			fprintf(stderr, "fcc_facility_id \"%d\"\n", event->sis.fcc_facility_id);*/
+
+			for (int i = 0; i < 6; i++) {
+				nrsc5_tmp_pmt[i] = pmt::mp("");
+			}
+
+			// null values can cause errors
+			if (event->sis.name)
+				nrsc5_tmp_pmt[0] = pmt::mp(event->sis.name);
+			if (event->sis.slogan)
+				nrsc5_tmp_pmt[1] = pmt::mp(event->sis.slogan);
+			if (event->sis.message)
+				nrsc5_tmp_pmt[2] = pmt::mp(event->sis.message);
+			if (event->sis.alert)
+				nrsc5_tmp_pmt[3] = pmt::mp(event->sis.alert);
+			sprintf(nrsc5_facility_id, "%d", event->sis.fcc_facility_id);
+			if (event->sis.country_code)
+				nrsc5_tmp_pmt[4] = pmt::mp(event->sis.country_code);
+			if (event->sis.fcc_facility_id)
+				nrsc5_tmp_pmt[5] = pmt::mp(nrsc5_facility_id);
+
+			pmt_message = pmt::mp(nrsc5_tmp_pmt[0], nrsc5_tmp_pmt[1], nrsc5_tmp_pmt[2], nrsc5_tmp_pmt[3], nrsc5_tmp_pmt[4], nrsc5_tmp_pmt[5]);
+			new_sis_message = 1;
 			break;
 		default:
 			std::cerr << "Unknown event\n";
