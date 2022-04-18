@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(nrsc5_rx.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(8ba4fee0df1341e782a7ffa291062cd9)                     */
+/* BINDTOOL_HEADER_FILE_HASH(0903f491ddd59f30aaf35a758dc4771a)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -38,7 +38,6 @@ void bind_nrsc5_rx(py::module& m)
 
         .def(py::init(&nrsc5_rx::make),
            py::arg("program") = 0,
-           py::arg("test") = true,
            D(nrsc5_rx,make)
         )
         

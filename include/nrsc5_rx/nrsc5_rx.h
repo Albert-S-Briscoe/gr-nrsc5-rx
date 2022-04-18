@@ -36,7 +36,7 @@ namespace gr {
        * class. nrsc5_rx::nrsc5_rx::make is the public interface for
        * creating new instances.
        */
-      static sptr make(int program=0, bool test=true);
+      static sptr make(int program=0);
 
       virtual void set_program(int program) = 0;
       virtual int get_sync() {return -100.0;};

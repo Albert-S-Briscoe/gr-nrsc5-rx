@@ -46,7 +46,7 @@ nrsc_5_receiver_impl::nrsc_5_receiver_impl(int program, float samp_rate, float a
 
     resampler = gr::filter::pfb_arb_resampler_ccf::make(resampler_rate, taps, 32);
 	type_converter = gr::blocks::complex_to_interleaved_short::make(true, 32767);
-    nrsc5_rx = gr::nrsc5_rx::nrsc5_rx::make(program, true);
+    nrsc5_rx = gr::nrsc5_rx::nrsc5_rx::make(program);
     audio_resampler0 = gr::filter::pfb_arb_resampler_fff::make(audio_resampler_rate, audio_taps, 32);
     audio_resampler1 = gr::filter::pfb_arb_resampler_fff::make(audio_resampler_rate, audio_taps, 32);
 

@@ -16,15 +16,13 @@ namespace nrsc5_rx {
 
 	class nrsc5_rx_impl : public nrsc5_rx {
 	private:
-		bool _test;
-
 		nrsc5_t* nrsc5;
 
         void set_program(int program) override;
         int get_sync() override;
 
 	public:
-		nrsc5_rx_impl(int program, bool test);
+		nrsc5_rx_impl(int program);
 		~nrsc5_rx_impl();
 
 		// Where all the action really happens

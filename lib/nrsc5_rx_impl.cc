@@ -15,23 +15,22 @@ namespace gr {
 	namespace nrsc5_rx {
 
 		nrsc5_rx::sptr
-		nrsc5_rx::make(int program, bool test)
+		nrsc5_rx::make(int program)
 		{
-			return gnuradio::make_block_sptr<nrsc5_rx_impl>(program, test);
+			return gnuradio::make_block_sptr<nrsc5_rx_impl>(program);
 		}
 
 
 		/*
 		 * The private constructor
 		 */
-		nrsc5_rx_impl::nrsc5_rx_impl(int program, bool test)
+		nrsc5_rx_impl::nrsc5_rx_impl(int program)
 			: gr::block("nrsc5_rx",
 				gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, 2 * sizeof(int16_t)),
 				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(float)))
 		{
 			message_port_register_out(pmt::mp("out"));
 
-			_test = test;
 			nrsc5_sync = 0;
 			new_sis_message = false;
 			new_id3_message = false;
