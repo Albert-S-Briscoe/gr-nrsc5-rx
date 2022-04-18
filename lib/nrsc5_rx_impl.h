@@ -39,16 +39,20 @@ namespace nrsc5_rx {
   } // namespace nrsc5_rx
 } // namespace gr
 
+// Are these variables public?
 int nrsc5_sync;
 unsigned int _program;
-std::queue<int16_t> left_audio_queue;
-std::queue<int16_t> right_audio_queue;
 
-int new_sis_message;
-pmt::pmt_t pmt_message;
+bool new_sis_message, new_id3_message;
+pmt::pmt_t sis_message, id3_message;
+
 char nrsc5_facility_id[20];
 pmt::pmt_t nrsc5_tmp_pmt[6];
 
+// Is there a better (gnuradio specific?) way of buffering audio?
+std::queue<int16_t> left_audio_queue, right_audio_queue;
+
 void nrsc5_rx_callback(const nrsc5_event_t *evt, void *opaque);
+void parse_id3(const nrsc5_event_t *event);
 
 #endif /* INCLUDED_NRSC5_RX_NRSC5_RX_IMPL_H */

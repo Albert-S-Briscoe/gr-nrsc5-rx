@@ -29,11 +29,12 @@ namespace gr {
 				gr::io_signature::make(1 /* min inputs */, 1 /* max inputs */, 2 * sizeof(int16_t)),
 				gr::io_signature::make(2 /* min outputs */, 2 /*max outputs */, sizeof(float)))
 		{
-			message_port_register_out(pmt::mp("SIS"));
+			message_port_register_out(pmt::mp("out"));
 
 			_test = test;
 			nrsc5_sync = 0;
-			new_sis_message = 0;
+			new_sis_message = false;
+			new_id3_message = false;
 
 			if ((program >= 0) && (program < 4))
 				_program = program;
@@ -105,9 +106,12 @@ namespace gr {
 
 			// output SIS information
 			if (new_sis_message) {
-				message_port_pub(pmt::mp("SIS"), pmt_message);
-				new_sis_message = 0;
-//				std::cerr << "Sent SIS\n";
+				message_port_pub(pmt::mp("out"), sis_message);
+				new_sis_message = false;
+			}
+			if (new_id3_message) {
+				message_port_pub(pmt::mp("out"), id3_message);
+				new_id3_message = false;
 			}
 
 //			if (n > 0)
@@ -120,6 +124,10 @@ namespace gr {
 		void nrsc5_rx_impl::set_program(int program) {
 			std::cerr << "program: " << program << "\n";
 			_program = program;
+
+			// Clear program specific id3 information
+			message_port_pub(pmt::mp("out"), pmt::mp(pmt::from_long(1), pmt::mp(""), pmt::mp(""), pmt::mp(""), pmt::mp("")));
+			new_id3_message = false;
 		}
 
 		int nrsc5_rx_impl::get_sync() {
@@ -155,7 +163,6 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			if (event->audio.program == _program) {
 //				std::cerr << "    Program: " << event->audio.program << " count: " << event->audio.count << "\n";
 				for (int i = 0; i < 2048; i++) {
-//					std::cerr << " " << (event->audio.data)[i];
 					left_audio_queue.push((event->audio.data)[2*i]);
 					right_audio_queue.push((event->audio.data)[2*i+1]);
 				}
@@ -172,12 +179,16 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			break;
 		case NRSC5_EVENT_ID3: // ID3 information?
 //			std::cerr << "NRSC5_EVENT_ID3\n";
+
+			if (event->id3.program == _program)
+				parse_id3(event);
+
 			break;
 		case NRSC5_EVENT_SIG: // Service information?
-			std::cerr << "NRSC5_EVENT_SIG\n";
+//			std::cerr << "NRSC5_EVENT_SIG\n";
 			break;
 		case NRSC5_EVENT_LOT: // LOT file data available?
-			std::cerr << "NRSC5_EVENT_LOT\n";
+//			std::cerr << "NRSC5_EVENT_LOT\n";
 			break;
 		case NRSC5_EVENT_SIS: // Station information
 //			std::cerr << "NRSC5_EVENT_SIS\n";
@@ -189,31 +200,48 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			fprintf(stderr, "country_code    \"%s\"\n", event->sis.country_code);
 			fprintf(stderr, "fcc_facility_id \"%d\"\n", event->sis.fcc_facility_id);*/
 
-			for (int i = 0; i < 6; i++) {
-				nrsc5_tmp_pmt[i] = pmt::mp("");
-			}
+			// null values can cause errors in pmt::string_to_symbol
+			nrsc5_tmp_pmt[0] = pmt::string_to_symbol(event->sis.name ? event->sis.name : "");
+			nrsc5_tmp_pmt[1] = pmt::string_to_symbol(event->sis.slogan ? event->sis.slogan : "");
+			nrsc5_tmp_pmt[2] = pmt::string_to_symbol(event->sis.message ? event->sis.message : "");
+			nrsc5_tmp_pmt[3] = pmt::string_to_symbol(event->sis.alert ? event->sis.alert : "");
+			nrsc5_tmp_pmt[4] = pmt::string_to_symbol(event->sis.country_code ? event->sis.country_code : "");
 
-			// null values can cause errors
-			if (event->sis.name)
-				nrsc5_tmp_pmt[0] = pmt::mp(event->sis.name);
-			if (event->sis.slogan)
-				nrsc5_tmp_pmt[1] = pmt::mp(event->sis.slogan);
-			if (event->sis.message)
-				nrsc5_tmp_pmt[2] = pmt::mp(event->sis.message);
-			if (event->sis.alert)
-				nrsc5_tmp_pmt[3] = pmt::mp(event->sis.alert);
 			sprintf(nrsc5_facility_id, "%d", event->sis.fcc_facility_id);
-			if (event->sis.country_code)
-				nrsc5_tmp_pmt[4] = pmt::mp(event->sis.country_code);
-			if (event->sis.fcc_facility_id)
-				nrsc5_tmp_pmt[5] = pmt::mp(nrsc5_facility_id);
+			nrsc5_tmp_pmt[5] = pmt::string_to_symbol(nrsc5_facility_id);
 
-			pmt_message = pmt::mp(nrsc5_tmp_pmt[0], nrsc5_tmp_pmt[1], nrsc5_tmp_pmt[2], nrsc5_tmp_pmt[3], nrsc5_tmp_pmt[4], nrsc5_tmp_pmt[5]);
-			new_sis_message = 1;
+			// pmt::from_long(0) indicates that this is SIS data
+			sis_message = pmt::mp(pmt::from_long(0), nrsc5_tmp_pmt[0], nrsc5_tmp_pmt[1], nrsc5_tmp_pmt[2], nrsc5_tmp_pmt[3], nrsc5_tmp_pmt[4], nrsc5_tmp_pmt[5]);
+			new_sis_message = true;
 			break;
 		default:
 			std::cerr << "Unknown event\n";
 	}
 
 	return;
+}
+
+// could this be in the nrsc5_rx_impl class?
+void parse_id3(const nrsc5_event_t *event) {
+//	fprintf(stderr, "program    \"%d\"\n", event->id3.program);
+/*	fprintf(stderr, "title      \"%s\"\n", event->id3.title);
+	fprintf(stderr, "artist     \"%s\"\n", event->id3.artist);
+	fprintf(stderr, "album      \"%s\"\n", event->id3.album);
+	fprintf(stderr, "genre      \"%s\"\n", event->id3.genre);
+
+	fprintf(stderr, "ufid owner \"%s\"\n", event->id3.ufid.owner);
+	fprintf(stderr, "ufid id    \"%s\"\n", event->id3.ufid.id);
+
+	fprintf(stderr, "xhdr mime  \"%x\"\n", event->id3.xhdr.mime);
+	fprintf(stderr, "xhdr param \"%d\"\n", event->id3.xhdr.param);
+	fprintf(stderr, "xhdr lot   \"%d\"\n", event->id3.xhdr.lot);*/
+
+	nrsc5_tmp_pmt[0] = pmt::string_to_symbol(event->id3.title ? event->id3.title : "");
+	nrsc5_tmp_pmt[1] = pmt::string_to_symbol(event->id3.artist ? event->id3.artist : "");
+	nrsc5_tmp_pmt[2] = pmt::string_to_symbol(event->id3.album ? event->id3.album : "");
+	nrsc5_tmp_pmt[3] = pmt::string_to_symbol(event->id3.genre ? event->id3.genre : "");
+
+	// pmt::from_long(1) indicates that this is ID3 data
+	id3_message = pmt::mp(pmt::from_long(1), nrsc5_tmp_pmt[0], nrsc5_tmp_pmt[1], nrsc5_tmp_pmt[2], nrsc5_tmp_pmt[3]);
+	new_id3_message = true;
 }
