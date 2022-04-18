@@ -19,18 +19,6 @@
  static const char *__doc_gr_nrsc5_rx_nrsc5_rx = R"doc()doc";
 
 
- static const char *__doc_gr_nrsc5_rx_nrsc5_rx_nrsc5_rx_0 = R"doc()doc";
-
-
- static const char *__doc_gr_nrsc5_rx_nrsc5_rx_nrsc5_rx_1 = R"doc()doc";
-
-
  static const char *__doc_gr_nrsc5_rx_nrsc5_rx_make = R"doc()doc";
-
-
- static const char *__doc_gr_nrsc5_rx_nrsc5_rx_set_program = R"doc()doc";
-
-
- static const char *__doc_gr_nrsc5_rx_nrsc5_rx_get_sync = R"doc()doc";
 
   

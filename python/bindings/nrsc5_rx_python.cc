@@ -30,7 +30,7 @@ namespace py = pybind11;
 void bind_nrsc5_rx(py::module& m)
 {
 
-    using nrsc5_rx    = ::gr::nrsc5_rx::nrsc5_rx;
+    using nrsc5_rx    = gr::nrsc5_rx::nrsc5_rx;
 
 
     py::class_<nrsc5_rx, gr::block, gr::basic_block,
@@ -44,19 +44,6 @@ void bind_nrsc5_rx(py::module& m)
         
 
 
-
-
-        
-        .def("set_program",&nrsc5_rx::set_program,       
-            py::arg("program"),
-            D(nrsc5_rx,set_program)
-        )
-
-
-        
-        .def("get_sync",&nrsc5_rx::get_sync,       
-            D(nrsc5_rx,get_sync)
-        )
 
         ;
 
