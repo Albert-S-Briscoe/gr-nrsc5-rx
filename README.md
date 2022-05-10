@@ -1,10 +1,10 @@
-### GNU Radio OOT module for NRSC-5
+### GNU Radio module for receiving NRSC-5 (HD Radio)
 
-Connects [nrsc5](https://github.com/theori-io/nrsc5) to [gnuradio](https://www.gnuradio.org/)
+Lets you use [nrsc5](https://github.com/theori-io/nrsc5) as a block in [GNU Radio](https://www.gnuradio.org/)
 
-Audio works reasonably well. There's also some example GRC flies. Currently requires [my branch of nrsc5](https://github.com/Albert-S-Briscoe/nrsc5).
+Outputs audio and SIS/ID3 data.
 
-Basic build instructions:
+### Basic build instructions:
 ```
 cd gr-nrsc5-rx
 mkdir build
