@@ -55,7 +55,7 @@ outputs:
 
 templates:
   imports: import nrsc5_rx
-  make: nrsc5_rx.nrsc5_rx(${program}, False)
+  make: nrsc5_rx.nrsc5_rx(${program})
   callbacks:
   - set_program(${program})
 

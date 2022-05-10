@@ -80,8 +80,12 @@ namespace gr {
 		                   gr_vector_void_star &output_items)
 		{
 			int n = 0;
-			//auto in = static_cast<const input_type*>(input_items[0]);
-			const int16_t* in = static_cast<const int16_t*>(input_items[0]);
+
+//			const int16_t* in = static_cast<const int16_t*>(input_items[0]);
+
+			// hack to get around non-const variables in nrsc5.
+			// It won't cause undefined behavior as long as nrsc5 doesn't change how piped samples work
+			int16_t* in = const_cast<int16_t*>(static_cast<const int16_t*>(input_items[0]));
 
 			auto out0 = static_cast<float*>(output_items[0]);
 			auto out1 = static_cast<float*>(output_items[1]);
@@ -89,9 +93,9 @@ namespace gr {
 			// Do <+signal processing+>
 			// Tell runtime system how many input items we consumed on
 			// each input stream.
+
 			nrsc5_pipe_samples_cs16(nrsc5, in, 2 * ninput_items[0]);
 
-			n = 0;
 			for (int i = 0; i < noutput_items * 2; i++, n++) {
 				if (left_audio_queue.empty() || right_audio_queue.empty())
 					break;
@@ -170,14 +174,9 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 			nrsc5_sync = 0;
 			break;
 
-		case NRSC5_EVENT_ID3: // ID3 information?
+		case NRSC5_EVENT_ID3: // ID3 information
 			if (event->id3.program != _program)
 				break;
-
-/*			fprintf(stderr, "title      \"%s\"\n", event->id3.title);
-			fprintf(stderr, "artist     \"%s\"\n", event->id3.artist);
-			fprintf(stderr, "album      \"%s\"\n", event->id3.album);
-			fprintf(stderr, "genre      \"%s\"\n", event->id3.genre);*/
 
 			// null values can cause errors
 			id3_message = pmt::mp(pmt::from_long(1), // ID3 data
@@ -193,12 +192,6 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 		case NRSC5_EVENT_LOT: // LOT file data available?
 			break;
 		case NRSC5_EVENT_SIS: // Station information
-/*			fprintf(stderr, "name            \"%s\"\n", event->sis.name);
-			fprintf(stderr, "slogan          \"%s\"\n", event->sis.slogan);
-			fprintf(stderr, "message         \"%s\"\n", event->sis.message);
-			fprintf(stderr, "alert           \"%s\"\n", event->sis.alert);
-			fprintf(stderr, "country_code    \"%s\"\n", event->sis.country_code);
-			fprintf(stderr, "fcc_facility_id \"%d\"\n", event->sis.fcc_facility_id);*/
 
 			char nrsc5_facility_id[20];
 			sprintf(nrsc5_facility_id, "%d", event->sis.fcc_facility_id);
