@@ -1,5 +1,3 @@
-message("Findnrsc5.cmake")
-
 SET(NRSC5_SEARCH_PATHS
     /usr
     /usr/local
@@ -15,8 +13,6 @@ FIND_LIBRARY(NRSC5_LIBRARIES
     PATH_SUFFIXES lib lib64
     PATHS ${NRSC5_SEARCH_PATHS}
 )
-
-message("End of Findnrsc5.cmake")
 
 INCLUDE(FindPackageHandleStandardArgs)
 

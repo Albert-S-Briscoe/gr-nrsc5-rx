@@ -14,9 +14,6 @@ parameters:
   label: Audio Program
   dtype: int
   default: 0
-#- id: ...
-#  label: ...
-#  dtype: ...
 
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
 #  Keys include:
@@ -30,14 +27,8 @@ inputs:
   domain: stream
   dtype: short
   vlen: 2
-#- label: ...
-#  domain: ...
-#  dtype: ...
-#  vlen: ...
-#  optional: ...
 
 outputs:
-# disabled until I have a callback function
 - label: Lout
   domain: stream
   dtype: float
@@ -45,13 +36,6 @@ outputs:
 - label: Rout
   domain: stream
   dtype: float
-
-
-#- label: ...
-#  domain: ...
-#  dtype: ...
-#  vlen: ...
-#  optional: ...
 
 templates:
   imports: import nrsc5_rx
@@ -69,18 +53,16 @@ cpp_templates:
     'True': 'true'
     'False': 'false'
 
-
 documentation: |-
-  Not intended for normal use.
+  This block is not intended for normal use.
 
-  Input is complex short (output of "Complex To IShort" with "Vector Output" on) at
-  exactly 744187.5 samples/sec.
-  It could also work with complex char at exactly 1488375 samples/sec, but
-  nrsc5 internally converts it back to short (at 744187.5 S/sec?), so I didn't bother.
+  This block assumes that the input is complex short (output of "Complex To IShort"
+  with "Vector Output" turned on) at exactly 744187.5 samples/sec. Anything else will
+  prevent nrsc5 from syncing.
 
   Output is 44100hz audio.
 
-  This block should support both Python and C++ output
+  This block supports both Python and C++ output
 
 #  'file_format' specifies the version of the GRC yml format used in the file
 #  and should usually not be changed.

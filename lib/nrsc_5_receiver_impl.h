@@ -21,22 +21,20 @@ namespace nrsc5_rx {
 class nrsc_5_receiver_impl : public nrsc_5_receiver
 {
 private:
-    std::vector<float> taps;
-    std::vector<float> audio_taps;
+	std::vector<float> taps;
+	std::vector<float> audio_taps;
 
-    gr::filter::pfb_arb_resampler_ccf::sptr resampler;
-    gr::blocks::complex_to_interleaved_short::sptr type_converter;
-    gr::nrsc5_rx::nrsc5_rx::sptr nrsc5_rx;
-    gr::filter::pfb_arb_resampler_fff::sptr audio_resampler0;
-    gr::filter::pfb_arb_resampler_fff::sptr audio_resampler1;
+	gr::filter::pfb_arb_resampler_ccf::sptr resampler;
+	gr::blocks::complex_to_interleaved_short::sptr type_converter;
+	gr::nrsc5_rx::nrsc5_rx::sptr nrsc5_rx;
+	gr::filter::pfb_arb_resampler_fff::sptr audio_resampler0;
+	gr::filter::pfb_arb_resampler_fff::sptr audio_resampler1;
 
 	void set_program(int program) override;
 
 public:
-    nrsc_5_receiver_impl(int program, float samp_rate, float audio_rate);
-    ~nrsc_5_receiver_impl();
-
-    // Where all the action really happens
+	nrsc_5_receiver_impl(int program, float samp_rate, float audio_rate);
+	~nrsc_5_receiver_impl();
 };
 
 } // namespace nrsc5_rx
