@@ -45,7 +45,7 @@ nrsc5_rx_impl::nrsc5_rx_impl(int program)
 		throw std::runtime_error("nrsc5_rx_impl: nrsc5_open_pipe failed");
 
 	nrsc5_set_auto_gain(nrsc5, 1);
-	nrsc5_set_callback(nrsc5, nrsc5_rx_callback, NULL);
+	nrsc5_set_callback(nrsc5, nrsc5_rx_callback, this);
 
 	nrsc5_start(nrsc5);
 }
@@ -138,11 +138,7 @@ int nrsc5_rx_impl::get_sync() {
 	return nrsc5_sync;
 }
 
-} /* namespace nrsc5_rx */
-} /* namespace gr */
-
-
-void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
+void nrsc5_rx_impl::handle_callback(const nrsc5_event_t *event) {
 	switch (event->event) {
 	case NRSC5_EVENT_LOST_DEVICE: // rtl_sdr disconnected. Should never occur, but process it anyways.
 		nrsc5_sync = 0;
@@ -209,3 +205,11 @@ void nrsc5_rx_callback(const nrsc5_event_t *event, void *opaque) {
 		break;
 	}
 }
+
+void nrsc5_rx_callback(const nrsc5_event_t *event, void* opaque) {
+	nrsc5_rx_impl* thisptr = (nrsc5_rx_impl*)opaque;
+	thisptr->handle_callback(event);
+}
+
+} /* namespace nrsc5_rx */
+} /* namespace gr */

@@ -11,10 +11,6 @@
 #include <nrsc5_rx/api.h>
 #include <gnuradio/block.h>
 
-extern "C" {
-#include <nrsc5.h>
-}
-
 namespace gr {
 namespace nrsc5_rx {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Free Software Foundation, Inc.
+ * Copyright 2023 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(nrsc5_rx.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(757f5210e27829fe13fd9f191a00a9b2)                     */
+/* BINDTOOL_HEADER_FILE_HASH(75d6e27fc03f25188c2bd07fbe3eab40)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -30,44 +30,22 @@ namespace py = pybind11;
 void bind_nrsc5_rx(py::module& m)
 {
 
-    using nrsc5_rx    = ::gr::nrsc5_rx::nrsc5_rx;
+    using nrsc5_rx = ::gr::nrsc5_rx::nrsc5_rx;
 
 
-    py::class_<nrsc5_rx, gr::block, gr::basic_block,
-        std::shared_ptr<nrsc5_rx>>(m, "nrsc5_rx", D(nrsc5_rx))
+    py::class_<nrsc5_rx, gr::block, gr::basic_block, std::shared_ptr<nrsc5_rx>>(
+        m, "nrsc5_rx", D(nrsc5_rx))
 
-        .def(py::init(&nrsc5_rx::make),
-           py::arg("program") = 0,
-           D(nrsc5_rx,make)
-        )
-        
+        .def(py::init(&nrsc5_rx::make), py::arg("program") = 0, D(nrsc5_rx, make))
 
 
+        .def("set_program",
+             &nrsc5_rx::set_program,
+             py::arg("program"),
+             D(nrsc5_rx, set_program))
 
 
-        
-        .def("set_program",&nrsc5_rx::set_program,       
-            py::arg("program"),
-            D(nrsc5_rx,set_program)
-        )
-
-
-        
-        .def("get_sync",&nrsc5_rx::get_sync,       
-            D(nrsc5_rx,get_sync)
-        )
+        .def("get_sync", &nrsc5_rx::get_sync, D(nrsc5_rx, get_sync))
 
         ;
-
-
-
-
 }
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Free Software Foundation, Inc.
+ * Copyright 2023 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -30,40 +30,23 @@ namespace py = pybind11;
 void bind_nrsc_5_receiver(py::module& m)
 {
 
-    using nrsc_5_receiver    = ::gr::nrsc5_rx::nrsc_5_receiver;
+    using nrsc_5_receiver = ::gr::nrsc5_rx::nrsc_5_receiver;
 
 
-    py::class_<nrsc_5_receiver, gr::hier_block2,
-        std::shared_ptr<nrsc_5_receiver>>(m, "nrsc_5_receiver", D(nrsc_5_receiver))
+    py::class_<nrsc_5_receiver, gr::hier_block2, std::shared_ptr<nrsc_5_receiver>>(
+        m, "nrsc_5_receiver", D(nrsc_5_receiver))
 
         .def(py::init(&nrsc_5_receiver::make),
-           py::arg("program") = 0,
-           py::arg("samp_rate") = 1200000,
-           py::arg("audio_rate") = 44100,
-           D(nrsc_5_receiver,make)
-        )
-        
+             py::arg("program") = 0,
+             py::arg("samp_rate") = 1200000,
+             py::arg("audio_rate") = 44100,
+             D(nrsc_5_receiver, make))
 
 
-
-
-        
-        .def("set_program",&nrsc_5_receiver::set_program,       
-            py::arg("program"),
-            D(nrsc_5_receiver,set_program)
-        )
+        .def("set_program",
+             &nrsc_5_receiver::set_program,
+             py::arg("program"),
+             D(nrsc_5_receiver, set_program))
 
         ;
-
-
-
-
 }
-
-
-
-
-
-
-
-
