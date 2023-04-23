@@ -27,15 +27,14 @@ private:
 
 	int nrsc5_sync;
 	unsigned int _program;
-
 	bool new_sis_message, new_id3_message;
 	pmt::pmt_t sis_message, id3_message;
 
-	void set_program(int program) override;
+	void set_program(unsigned int program) override;
 	int get_sync() override;
 
 public:
-	nrsc5_rx_impl(int program);
+	nrsc5_rx_impl(unsigned int program);
 	~nrsc5_rx_impl();
 
 	// Where all the action really happens
